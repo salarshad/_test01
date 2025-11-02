@@ -90,7 +90,17 @@ def professional_detail_page() -> rx.Component:
         sidebar(),
         rx.el.div(
             header(),
-            rx.el.main(professional_detail_content(), class_name="p-6"),
+            rx.el.main(
+                rx.cond(
+                    APIState.is_detail_page_loading,
+                    rx.el.div(
+                        rx.el.p("Loading professional details..."),
+                        class_name="flex items-center justify-center h-64",
+                    ),
+                    professional_detail_content(),
+                ),
+                class_name="p-6",
+            ),
             class_name="flex flex-col flex-1",
         ),
         class_name="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr] font-['Montserrat'] bg-gray-50",

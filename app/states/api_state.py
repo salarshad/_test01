@@ -221,6 +221,10 @@ class APIState(rx.State):
                 return p
         return None
 
+    @rx.var
+    def is_detail_page_loading(self) -> bool:
+        return self.router.page.params.get("id") != self.selected_professional_id
+
     @rx.event
     def set_search_query(self, query: str):
         self.search_query = query
