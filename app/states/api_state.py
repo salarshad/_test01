@@ -144,6 +144,7 @@ class APIState(rx.State):
     show_add_modal: bool = False
     show_detail_modal: bool = False
     show_delete_dialog: bool = False
+    detail_loading: bool = False
     selected_professional_id: str | None = None
     edit_form: Professional = {}
     add_form: Professional = {
@@ -229,9 +230,21 @@ class APIState(rx.State):
                 return p
         return None
 
-    @rx.var
-    def is_detail_page_loading(self) -> bool:
-        return self.router.page.params.get("id") != self.selected_professional_id
+    is_editing_detail: bool = False
+
+    @rx.event
+    def toggle_edit_detail(self):
+        self.is_editing_detail = not self.is_editing_detail
+
+    @rx.event
+    def cancel_edit_detail(self):
+        self.is_editing_detail = False
+        return APIState.get_professional_by_id
+
+    @rx.event
+    def set_search_query(self, query: str):
+        self.search_query = query
+        self.current_page = 1
 
     @rx.event
     def set_search_query(self, query: str):
@@ -349,6 +362,7 @@ class APIState(rx.State):
                 self.professionals[i] = self.edit_form
                 break
         self.show_edit_modal = False
+        self.is_editing_detail = False
         return rx.toast.success("Professional updated!")
 
     @rx.event
@@ -363,13 +377,22 @@ class APIState(rx.State):
 
     @rx.event(background=True)
     async def get_professional_by_id(self):
+        async with self:
+            self.detail_loading = True
+            self.edit_form = {}
         professional_id = self.router.page.params.get("id")
         async with self:
+            self.is_editing_detail = False
+            if not self.professionals:
+                await self.fetch_professionals()
             for p in self.professionals:
                 if p["id"] == professional_id:
                     self.selected_professional_id = professional_id
+                    self.edit_form = p.copy()
+                    self.detail_loading = False
                     return
             self.selected_professional_id = None
+            self.detail_loading = False
 
     @rx.event
     def open_detail_modal(self, professional_id: str):

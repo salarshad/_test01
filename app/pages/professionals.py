@@ -65,9 +65,9 @@ def table_row(professional: Professional) -> rx.Component:
         ),
         rx.el.td(
             rx.el.div(
-                rx.el.button(
-                    rx.icon("disc_3", class_name="h-4 w-4"),
-                    on_click=lambda: APIState.open_edit_modal(professional["id"]),
+                rx.el.a(
+                    rx.icon("copy", class_name="h-4 w-4"),
+                    href=f"/professionals/{professional['id']}",
                     class_name="p-2 text-blue-600 hover:bg-blue-50 rounded-md",
                 ),
                 rx.el.button(
@@ -79,8 +79,7 @@ def table_row(professional: Professional) -> rx.Component:
             ),
             class_name="p-3 border-t",
         ),
-        on_click=lambda: rx.redirect(f"/professionals/{professional['id']}"),
-        class_name="hover:bg-gray-50 cursor-pointer",
+        class_name="hover:bg-gray-50",
     )
 
 
