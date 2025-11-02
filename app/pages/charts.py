@@ -39,26 +39,19 @@ def line_chart() -> rx.Component:
 
 
 def charts_page() -> rx.Component:
-    return rx.el.div(
-        sidebar(),
+    from app.app import page_layout
+
+    return page_layout(
         rx.el.div(
-            header(),
-            rx.el.main(
-                rx.el.h1("Charts", class_name="text-2xl font-semibold mb-6"),
+            rx.el.h1("Charts", class_name="text-2xl font-semibold mb-6"),
+            rx.el.div(
                 rx.el.div(
-                    rx.el.div(
-                        rx.el.h2(
-                            "User Activity", class_name="text-lg font-semibold mb-4"
-                        ),
-                        line_chart(),
-                        html_legend(),
-                        class_name="rounded-xl border bg-white p-4 shadow-sm",
-                    ),
-                    class_name="mt-6",
+                    rx.el.h2("User Activity", class_name="text-lg font-semibold mb-4"),
+                    line_chart(),
+                    html_legend(),
+                    class_name="rounded-xl border bg-white p-4 shadow-sm",
                 ),
-                class_name="p-6",
+                class_name="mt-6",
             ),
-            class_name="flex flex-col flex-1",
-        ),
-        class_name="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr] font-['Montserrat'] bg-gray-50",
+        )
     )

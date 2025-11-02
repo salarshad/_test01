@@ -154,12 +154,6 @@ def professional_detail_content() -> rx.Component:
 
 
 def professional_detail_page() -> rx.Component:
-    return rx.el.div(
-        sidebar(),
-        rx.el.div(
-            header(),
-            rx.el.main(professional_detail_content(), class_name="p-6"),
-            class_name="flex flex-col flex-1",
-        ),
-        class_name="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr] font-['Montserrat'] bg-gray-50",
-    )
+    from app.app import page_layout
+
+    return page_layout(professional_detail_content())

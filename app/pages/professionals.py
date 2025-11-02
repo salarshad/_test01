@@ -120,55 +120,47 @@ def pagination_controls() -> rx.Component:
 
 
 def professionals_page() -> rx.Component:
-    return rx.el.div(
-        sidebar(),
+    from app.app import page_layout
+
+    return page_layout(
         rx.el.div(
-            header(),
-            rx.el.main(
+            rx.el.div(
+                rx.el.h1("Professionals", class_name="text-2xl font-semibold"),
                 rx.el.div(
-                    rx.el.div(
-                        rx.el.h1("Professionals", class_name="text-2xl font-semibold"),
-                        rx.el.div(
-                            rx.el.input(
-                                placeholder="Search by name...",
-                                on_change=APIState.set_search_query,
-                                class_name="w-full md:w-64 rounded-md border px-3 py-2 text-sm",
-                                default_value=APIState.search_query,
-                            ),
-                            rx.el.select(
-                                rx.foreach(
-                                    APIState.all_categories,
-                                    lambda c: rx.el.option(c, value=c),
-                                ),
-                                on_change=APIState.set_selected_category,
-                                value=APIState.selected_category,
-                                placeholder="Filter by category",
-                                class_name="rounded-md border px-3 py-2 text-sm",
-                            ),
-                            rx.el.button(
-                                rx.icon("refresh-cw", class_name="h-4 w-4"),
-                                on_click=APIState.fetch_professionals,
-                                class_name="p-2 text-sm rounded-md border bg-white hover:bg-gray-50",
-                            ),
-                            rx.el.button(
-                                "Add New Professional",
-                                on_click=APIState.open_add_modal,
-                                class_name="px-4 py-2 text-sm rounded-md bg-blue-600 text-white hover:bg-blue-700",
-                            ),
-                            class_name="flex items-center gap-4",
-                        ),
-                        class_name="flex justify-between items-center mb-6",
+                    rx.el.input(
+                        placeholder="Search by name...",
+                        on_change=APIState.set_search_query,
+                        class_name="w-full md:w-64 rounded-md border px-3 py-2 text-sm",
+                        default_value=APIState.search_query,
                     ),
-                    professionals_table(),
-                    pagination_controls(),
-                    edit_modal(),
-                    add_modal(),
-                    detail_modal(),
-                    delete_dialog(),
+                    rx.el.select(
+                        rx.foreach(
+                            APIState.all_categories, lambda c: rx.el.option(c, value=c)
+                        ),
+                        on_change=APIState.set_selected_category,
+                        value=APIState.selected_category,
+                        placeholder="Filter by category",
+                        class_name="rounded-md border px-3 py-2 text-sm",
+                    ),
+                    rx.el.button(
+                        rx.icon("refresh-cw", class_name="h-4 w-4"),
+                        on_click=APIState.fetch_professionals,
+                        class_name="p-2 text-sm rounded-md border bg-white hover:bg-gray-50",
+                    ),
+                    rx.el.button(
+                        "Add New Professional",
+                        on_click=APIState.open_add_modal,
+                        class_name="px-4 py-2 text-sm rounded-md bg-blue-600 text-white hover:bg-blue-700",
+                    ),
+                    class_name="flex items-center gap-4",
                 ),
-                class_name="p-6",
+                class_name="flex justify-between items-center mb-6",
             ),
-            class_name="flex flex-col flex-1",
-        ),
-        class_name="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr] font-['Montserrat'] bg-gray-50",
+            professionals_table(),
+            pagination_controls(),
+            edit_modal(),
+            add_modal(),
+            detail_modal(),
+            delete_dialog(),
+        )
     )

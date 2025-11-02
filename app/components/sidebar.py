@@ -38,4 +38,5 @@ def sidebar() -> rx.Component:
             "fixed inset-y-0 left-0 z-40 w-[220px] border-r bg-gray-100/40 transition-transform transform translate-x-0 md:hidden",
             "hidden md:block md:w-[220px] lg:w-[280px] border-r bg-gray-100/40",
         ),
+        on_click=rx.cond(APIState.sidebar_open, APIState.toggle_sidebar, rx.noop()),
     )
