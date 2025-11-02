@@ -16,6 +16,40 @@ def stat_card(title: str, value: rx.Var, icon: str) -> rx.Component:
     )
 
 
+def html_legend() -> rx.Component:
+    return rx.el.div(
+        rx.el.div(
+            rx.el.div(class_name="w-3 h-3 rounded-full bg-[#8884d8]"),
+            rx.el.p("Desktop", class_name="text-sm text-gray-600"),
+            class_name="flex items-center gap-2",
+        ),
+        rx.el.div(
+            rx.el.div(class_name="w-3 h-3 rounded-full bg-[#82ca9d]"),
+            rx.el.p("Mobile", class_name="text-sm text-gray-600"),
+            class_name="flex items-center gap-2",
+        ),
+        class_name="flex justify-center gap-6 mt-4",
+    )
+
+
+def line_chart() -> rx.Component:
+    return rx.recharts.line_chart(
+        rx.recharts.cartesian_grid(stroke_dasharray="3 3"),
+        rx.recharts.x_axis(data_key="month"),
+        rx.recharts.y_axis(),
+        rx.recharts.tooltip(),
+        rx.recharts.line(
+            data_key="desktop", stroke="#8884d8", type_="monotone", stroke_width=2
+        ),
+        rx.recharts.line(
+            data_key="mobile", stroke="#82ca9d", type_="monotone", stroke_width=2
+        ),
+        data=APIState.chart_data,
+        width="100%",
+        height=300,
+    )
+
+
 def dashboard() -> rx.Component:
     return rx.el.div(
         rx.el.h1("Dashboard", class_name="text-2xl font-semibold mb-6"),
@@ -34,8 +68,12 @@ def dashboard() -> rx.Component:
         ),
         rx.el.div(
             rx.el.div(
-                class_name="rounded-xl border bg-white p-4 shadow-sm mt-6 min-h-[300px] flex items-center justify-center text-gray-400"
-            )
+                rx.el.h2("User Activity", class_name="text-lg font-semibold mb-4"),
+                line_chart(),
+                html_legend(),
+                class_name="rounded-xl border bg-white p-4 shadow-sm",
+            ),
+            class_name="mt-6",
         ),
         class_name="flex-1 p-6",
     )

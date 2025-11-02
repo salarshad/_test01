@@ -25,6 +25,7 @@ def sidebar() -> rx.Component:
             rx.el.nav(
                 sidebar_item("Dashboard", "layout-dashboard", "/"),
                 sidebar_item("Professionals", "users", "/professionals"),
+                sidebar_item("Charts", "bar-chart-3", "/charts"),
                 class_name="grid items-start px-4 text-sm font-medium",
             ),
             class_name="flex-1 overflow-auto py-2",

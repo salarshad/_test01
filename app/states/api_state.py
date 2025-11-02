@@ -127,6 +127,14 @@ MOCK_PROFESSIONALS: list[Professional] = [
 
 class APIState(rx.State):
     professionals: list[Professional] = []
+    chart_data: list[dict[str, str | int]] = [
+        {"month": "Jan", "desktop": 186, "mobile": 80},
+        {"month": "Feb", "desktop": 305, "mobile": 200},
+        {"month": "Mar", "desktop": 237, "mobile": 120},
+        {"month": "Apr", "desktop": 73, "mobile": 190},
+        {"month": "May", "desktop": 209, "mobile": 130},
+        {"month": "Jun", "desktop": 214, "mobile": 140},
+    ]
     loading: bool = False
     search_query: str = ""
     selected_category: str = ""
@@ -303,7 +311,7 @@ class APIState(rx.State):
         }
 
     @rx.event
-    def update_edit_form(self, field: str, value: Any):
+    def update_edit_form(self, field: str, value: str | list[str]):
         if "." in field:
             parts = field.split(".")
             self.edit_form[parts[0]][parts[1]] = value
@@ -311,7 +319,7 @@ class APIState(rx.State):
             self.edit_form[field] = value
 
     @rx.event
-    def update_add_form(self, field: str, value: Any):
+    def update_add_form(self, field: str, value: str | list[str]):
         if "." in field:
             parts = field.split(".")
             self.add_form[parts[0]][parts[1]] = value

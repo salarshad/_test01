@@ -5,6 +5,7 @@ from app.components.header import header
 from app.pages.dashboard import dashboard
 from app.pages.professionals import professionals_page
 from app.pages.professional_detail import professional_detail_page
+from app.pages.charts import charts_page
 
 
 def index() -> rx.Component:
@@ -39,3 +40,4 @@ app.add_page(
     route="/professionals/[id]",
     on_load=APIState.get_professional_by_id,
 )
+app.add_page(charts_page, route="/charts")
