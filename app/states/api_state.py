@@ -345,6 +345,10 @@ class APIState(rx.State):
         self.show_add_modal = False
         return rx.toast.success("Professional added!")
 
+    @rx.event
+    def reset_selected_professional(self):
+        self.selected_professional_id = None
+
     @rx.event(background=True)
     async def get_professional_by_id(self):
         professional_id = self.router.page.params.get("id")
