@@ -1,10 +1,15 @@
 import reflex as rx
+from app.states.api_state import APIState
 
 
 def header() -> rx.Component:
     return rx.el.header(
         rx.el.div(
-            rx.el.button(rx.icon("menu", class_name="h-6 w-6"), class_name="md:hidden"),
+            rx.el.button(
+                rx.icon("menu", class_name="h-6 w-6"),
+                on_click=APIState.toggle_sidebar,
+                class_name="md:hidden",
+            ),
             class_name="flex items-center gap-4 md:ml-auto md:gap-2 lg:gap-4",
         ),
         rx.el.div(class_name="w-full flex-1"),

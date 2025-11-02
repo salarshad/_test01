@@ -145,6 +145,7 @@ class APIState(rx.State):
     show_detail_modal: bool = False
     show_delete_dialog: bool = False
     detail_loading: bool = False
+    sidebar_open: bool = False
     selected_professional_id: str | None = None
     edit_form: Professional = {}
     add_form: Professional = {
@@ -232,6 +233,10 @@ class APIState(rx.State):
         return None
 
     is_editing_detail: bool = False
+
+    @rx.event
+    def toggle_sidebar(self):
+        self.sidebar_open = not self.sidebar_open
 
     @rx.event
     def toggle_edit_detail(self):

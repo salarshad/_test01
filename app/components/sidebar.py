@@ -10,6 +10,9 @@ def sidebar_item(text: str, icon: str, url: str) -> rx.Component:
     )
 
 
+from app.states.api_state import APIState
+
+
 def sidebar() -> rx.Component:
     return rx.el.aside(
         rx.el.div(
@@ -30,5 +33,9 @@ def sidebar() -> rx.Component:
             ),
             class_name="flex-1 overflow-auto py-2",
         ),
-        class_name="hidden border-r bg-gray-100/40 md:block",
+        class_name=rx.cond(
+            APIState.sidebar_open,
+            "fixed inset-y-0 left-0 z-40 w-[220px] border-r bg-gray-100/40 transition-transform transform translate-x-0 md:hidden",
+            "hidden md:block md:w-[220px] lg:w-[280px] border-r bg-gray-100/40",
+        ),
     )

@@ -16,6 +16,13 @@ def index() -> rx.Component:
             rx.el.main(dashboard(), class_name="p-6"),
             class_name="flex flex-col flex-1",
         ),
+        rx.cond(
+            APIState.sidebar_open,
+            rx.el.div(
+                class_name="fixed inset-0 bg-black/50 z-30",
+                on_click=APIState.toggle_sidebar,
+            ),
+        ),
         class_name="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr] font-['Montserrat'] bg-gray-50",
     )
 
