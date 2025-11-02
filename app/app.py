@@ -30,12 +30,12 @@ app = rx.App(
         ),
     ],
 )
-app.add_page(index, route="/")
+app.add_page(index, route="/", on_load=APIState.fetch_professionals)
 app.add_page(
     professionals_page, route="/professionals", on_load=APIState.fetch_professionals
 )
 app.add_page(
     professional_detail_page,
     route="/professionals/[id]",
-    on_load=[APIState.reset_selected_professional, APIState.get_professional_by_id],
+    on_load=APIState.get_professional_by_id,
 )
