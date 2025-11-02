@@ -146,6 +146,11 @@ def professionals_page() -> rx.Component:
                                 class_name="rounded-md border px-3 py-2 text-sm",
                             ),
                             rx.el.button(
+                                rx.icon("refresh-cw", class_name="h-4 w-4"),
+                                on_click=APIState.fetch_professionals,
+                                class_name="p-2 text-sm rounded-md border bg-white hover:bg-gray-50",
+                            ),
+                            rx.el.button(
                                 "Add New Professional",
                                 on_click=APIState.open_add_modal,
                                 class_name="px-4 py-2 text-sm rounded-md bg-blue-600 text-white hover:bg-blue-700",

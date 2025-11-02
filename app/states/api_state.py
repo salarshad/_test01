@@ -174,6 +174,7 @@ class APIState(rx.State):
         async with self:
             self.professionals = MOCK_PROFESSIONALS
             self.loading = False
+            return rx.toast.info("Professionals list refreshed.")
 
     @rx.var
     def total_professionals(self) -> int:
