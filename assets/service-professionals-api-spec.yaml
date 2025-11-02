@@ -1,0 +1,727 @@
+openapi: 3.0.3
+info:
+  title: Service Professionals API
+  description: API for managing service professionals, search functionality, reviews, and location-based services
+  version: 1.0.0
+  contact:
+    name: Service Professionals API
+    email: api@serviceprofessionals.com
+
+servers:
+  - url: https://api.serviceprofessionals.com/v1
+    description: Production server
+  - url: http://localhost:8000/v1
+    description: Development server
+
+paths:
+  /professionals/search:
+    get:
+      summary: Search for professionals
+      description: Search professionals with optional filters for category, location, and pagination
+      tags:
+        - Professionals
+      parameters:
+        - name: q
+          in: query
+          description: Search term
+          required: false
+          schema:
+            type: string
+            example: "plumber"
+        - name: category
+          in: query
+          description: Service category filter
+          required: false
+          schema:
+            type: string
+            example: "plumber"
+        - name: lat
+          in: query
+          description: Latitude for location-based search
+          required: false
+          schema:
+            type: number
+            format: double
+            example: 37.7749
+        - name: lng
+          in: query
+          description: Longitude for location-based search
+          required: false
+          schema:
+            type: number
+            format: double
+            example: -122.4194
+        - name: radius
+          in: query
+          description: Search radius in kilometers
+          required: false
+          schema:
+            type: number
+            format: double
+            default: 10
+            example: 15.5
+        - name: page
+          in: query
+          description: Page number for pagination
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+            example: 1
+        - name: limit
+          in: query
+          description: Number of results per page
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 20
+            example: 20
+      responses:
+        '200':
+          description: Successful search results
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfessionalsSearchResponse'
+        '400':
+          description: Bad request - invalid parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /professionals/category:
+    get:
+      summary: Get professionals by category
+      description: Get professionals filtered by category with location-based search
+      tags:
+        - Professionals
+      parameters:
+        - name: category
+          in: query
+          description: Service category
+          required: true
+          schema:
+            type: string
+            example: "electrician"
+        - name: lat
+          in: query
+          description: Latitude
+          required: true
+          schema:
+            type: number
+            format: double
+            example: 37.7749
+        - name: lng
+          in: query
+          description: Longitude
+          required: true
+          schema:
+            type: number
+            format: double
+            example: -122.4194
+        - name: radius
+          in: query
+          description: Search radius in kilometers
+          required: false
+          schema:
+            type: number
+            format: double
+            default: 10
+            example: 15.5
+        - name: page
+          in: query
+          description: Page number
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: limit
+          in: query
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 20
+      responses:
+        '200':
+          description: Professionals found for category
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfessionalsSearchResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /professionals/{id}:
+    get:
+      summary: Get professional by ID
+      description: Retrieve detailed information about a specific professional
+      tags:
+        - Professionals
+      parameters:
+        - name: id
+          in: path
+          description: Professional ID
+          required: true
+          schema:
+            type: string
+            example: "prof_123"
+      responses:
+        '200':
+          description: Professional details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfessionalDetailResponse'
+        '404':
+          description: Professional not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /professionals/featured:
+    get:
+      summary: Get featured professionals
+      description: Get featured professionals for home screen display
+      tags:
+        - Professionals
+      parameters:
+        - name: lat
+          in: query
+          description: Latitude for location-based results
+          required: false
+          schema:
+            type: number
+            format: double
+        - name: lng
+          in: query
+          description: Longitude for location-based results
+          required: false
+          schema:
+            type: number
+            format: double
+        - name: limit
+          in: query
+          description: Number of featured professionals
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 20
+            default: 10
+      responses:
+        '200':
+          description: Featured professionals
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfessionalsSearchResponse'
+
+  /professionals/nearby:
+    get:
+      summary: Get nearby professionals
+      description: Get professionals near a specific location
+      tags:
+        - Professionals
+      parameters:
+        - name: lat
+          in: query
+          description: Latitude
+          required: true
+          schema:
+            type: number
+            format: double
+        - name: lng
+          in: query
+          description: Longitude
+          required: true
+          schema:
+            type: number
+            format: double
+        - name: radius
+          in: query
+          description: Search radius in kilometers
+          required: false
+          schema:
+            type: number
+            format: double
+            default: 10
+        - name: category
+          in: query
+          description: Filter by category
+          required: false
+          schema:
+            type: string
+        - name: page
+          in: query
+          description: Page number
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: limit
+          in: query
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 20
+      responses:
+        '200':
+          description: Nearby professionals
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfessionalsSearchResponse'
+
+  /categories:
+    get:
+      summary: Get service categories
+      description: Get list of available service categories
+      tags:
+        - Categories
+      responses:
+        '200':
+          description: List of categories
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoriesResponse'
+
+  /reviews:
+    post:
+      summary: Submit a review
+      description: Submit a review for a professional
+      tags:
+        - Reviews
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReviewSubmissionRequest'
+      responses:
+        '201':
+          description: Review submitted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReviewResponse'
+        '400':
+          description: Invalid review data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /reports:
+    post:
+      summary: Report a professional
+      description: Submit a report about a professional for moderation
+      tags:
+        - Reports
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReportRequest'
+      responses:
+        '201':
+          description: Report submitted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportResponse'
+        '400':
+          description: Invalid report data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    Professional:
+      type: object
+      required:
+        - id
+        - name
+        - category
+        - description
+        - services
+        - location
+        - rating
+        - reviews
+        - contact_info
+        - image_urls
+        - last_updated
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the professional
+          example: "prof_123"
+        name:
+          type: string
+          description: Full name of the professional
+          example: "John Smith"
+        category:
+          type: string
+          description: Service category
+          example: "plumber"
+        description:
+          type: string
+          description: Detailed description of services offered
+          example: "Experienced plumber with 10+ years in residential and commercial plumbing"
+        services:
+          type: array
+          items:
+            type: string
+          description: List of specific services provided
+          example: ["pipe repair", "drain cleaning", "water heater installation"]
+        location:
+          $ref: '#/components/schemas/Location'
+        rating:
+          type: number
+          format: double
+          minimum: 0.0
+          maximum: 5.0
+          description: Average rating
+          example: 4.8
+        reviews:
+          type: array
+          items:
+            $ref: '#/components/schemas/Review'
+          description: List of customer reviews
+        contact_info:
+          $ref: '#/components/schemas/ContactInfo'
+        image_urls:
+          type: array
+          items:
+            type: string
+            format: uri
+          description: URLs to profile and portfolio images
+          example: ["https://api.serviceprofessionals.com/images/prof_123_1.jpg"]
+        last_updated:
+          type: integer
+          format: int64
+          description: Timestamp when professional data was last updated
+          example: 1640995200000
+
+    Location:
+      type: object
+      required:
+        - latitude
+        - longitude
+        - address
+        - city
+        - state
+      properties:
+        latitude:
+          type: number
+          format: double
+          description: Latitude coordinate
+          example: 37.7749
+        longitude:
+          type: number
+          format: double
+          description: Longitude coordinate
+          example: -122.4194
+        address:
+          type: string
+          description: Street address
+          example: "123 Main St"
+        city:
+          type: string
+          description: City name
+          example: "San Francisco"
+        state:
+          type: string
+          description: State or province
+          example: "CA"
+        distance_from_user:
+          type: number
+          format: double
+          description: Distance from user's location in kilometers (optional)
+          example: 2.5
+
+    Review:
+      type: object
+      required:
+        - id
+        - customer_name
+        - rating
+        - comment
+        - date
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the review
+          example: "rev_456"
+        customer_name:
+          type: string
+          description: Name of the customer who left the review
+          example: "Jane Doe"
+        rating:
+          type: number
+          format: double
+          minimum: 1.0
+          maximum: 5.0
+          description: Rating given
+          example: 5.0
+        comment:
+          type: string
+          description: Written review comment
+          example: "Excellent service, very professional"
+        date:
+          type: integer
+          format: int64
+          description: Timestamp when review was posted
+          example: 1640995200000
+        service_type:
+          type: string
+          description: Optional type of service reviewed
+          example: "pipe repair"
+
+    ContactInfo:
+      type: object
+      required:
+        - phone
+        - email
+      properties:
+        phone:
+          type: string
+          description: Primary phone number
+          example: "+1-555-0123"
+        email:
+          type: string
+          format: email
+          description: Email address
+          example: "john@example.com"
+        website:
+          type: string
+          format: uri
+          description: Optional website URL
+          example: "https://johnplumbing.com"
+        business_hours:
+          type: string
+          description: Optional business hours description
+          example: "Mon-Fri 8AM-6PM"
+
+    ProfessionalsSearchResponse:
+      type: object
+      required:
+        - data
+        - meta
+      properties:
+        data:
+          type: object
+          required:
+            - professionals
+          properties:
+            professionals:
+              type: array
+              items:
+                $ref: '#/components/schemas/Professional'
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+
+    ProfessionalDetailResponse:
+      type: object
+      required:
+        - data
+      properties:
+        data:
+          $ref: '#/components/schemas/Professional'
+
+    CategoriesResponse:
+      type: object
+      required:
+        - data
+      properties:
+        data:
+          type: array
+          items:
+            type: string
+          example: ["plumber", "electrician", "carpenter", "painter", "cleaner"]
+
+    ReviewSubmissionRequest:
+      type: object
+      required:
+        - professional_id
+        - customer_name
+        - rating
+        - comment
+      properties:
+        professional_id:
+          type: string
+          description: ID of the professional being reviewed
+          example: "prof_123"
+        customer_name:
+          type: string
+          description: Name of the customer submitting the review
+          example: "Jane Doe"
+        rating:
+          type: number
+          format: double
+          minimum: 1.0
+          maximum: 5.0
+          description: Rating score
+          example: 5.0
+        comment:
+          type: string
+          description: Review comment
+          example: "Excellent service, very professional"
+        service_type:
+          type: string
+          description: Optional type of service reviewed
+          example: "pipe repair"
+
+    ReviewResponse:
+      type: object
+      required:
+        - data
+      properties:
+        data:
+          allOf:
+            - $ref: '#/components/schemas/Review'
+            - type: object
+              properties:
+                professional_id:
+                  type: string
+                  example: "prof_123"
+
+    ReportRequest:
+      type: object
+      required:
+        - professional_id
+        - reason
+        - description
+      properties:
+        professional_id:
+          type: string
+          description: ID of the professional being reported
+          example: "prof_123"
+        reason:
+          type: string
+          description: Reason for the report
+          enum:
+            - inappropriate_behavior
+            - fake_profile
+            - poor_service
+            - spam
+            - other
+          example: "inappropriate_behavior"
+        description:
+          type: string
+          description: Detailed description of the issue
+          example: "Detailed description of the issue"
+
+    ReportResponse:
+      type: object
+      required:
+        - data
+      properties:
+        data:
+          type: object
+          required:
+            - id
+            - status
+            - message
+          properties:
+            id:
+              type: string
+              description: Report ID
+              example: "report_456"
+            status:
+              type: string
+              description: Report status
+              example: "submitted"
+            message:
+              type: string
+              description: Confirmation message
+              example: "Report submitted successfully"
+
+    PaginationMeta:
+      type: object
+      required:
+        - page
+        - limit
+        - total
+        - has_more
+      properties:
+        page:
+          type: integer
+          description: Current page number
+          example: 1
+        limit:
+          type: integer
+          description: Number of items per page
+          example: 20
+        total:
+          type: integer
+          description: Total number of items
+          example: 150
+        has_more:
+          type: boolean
+          description: Whether there are more pages available
+          example: true
+
+    ErrorResponse:
+      type: object
+      required:
+        - error
+        - message
+      properties:
+        error:
+          type: string
+          description: Error type
+          example: "VALIDATION_ERROR"
+        message:
+          type: string
+          description: Human-readable error message
+          example: "Invalid parameters provided"
+        code:
+          type: string
+          description: Specific error code
+          example: "INVALID_COORDINATES"
+
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+
+security:
+  - ApiKeyAuth: []
+
+tags:
+  - name: Professionals
+    description: Operations related to service professionals
+  - name: Categories
+    description: Service category operations
+  - name: Reviews
+    description: Review management
+  - name: Reports
+    description: Professional reporting system
